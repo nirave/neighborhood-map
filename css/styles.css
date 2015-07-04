@@ -1,0 +1,31 @@
+html, body, #map {
+    font-family: "Lato", sans-serif;
+    color: black;
+    font-weight: 200;
+    height: 100%;
+    width: 100%;
+    margin: 0px;
+    padding: 0px;
+}
+
+ul {
+    list-style:none;
+    padding-left:0;
+    width: 100%;
+}
+
+li {
+    padding-top: 3px;
+    padding-bottom: 3px;
+    list-style-type: none;
+    background-color: #D3D3D3;
+    width: 100%;
+}
+
+li:nth-child(odd) {
+    background: #F8F8FF;
+}
+
+input {
+    width: 100%;
+}
