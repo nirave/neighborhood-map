@@ -1,9 +1,16 @@
 var map;    // declares a global map variable
 
 function initializeMap() {
+  // infoWindows are the little helper windows that open when you click
+  // or hover over a pin on a map. They usually contain more information
+  // about a location.
+  var oneInfoWindow;
+
   //Using bootstrap, the height of a google map needs to be explicitely set,
   //this function sets the height of the map
   setHeight();
+
+  oneInfoWindow = new google.maps.InfoWindow();
 
   var mapOptions = {
     disableDefaultUI: true
@@ -19,37 +26,21 @@ function initializeMap() {
   */
   function pinPoster() {
 
-    // creates a Google place search service object. PlacesService does the work of
-    // actually searching for location data.
-    var service = new google.maps.places.PlacesService(map);
-
     // Iterates through the array of locations, creates a search object for each location
     ko.utils.arrayForEach(myViewModel.locations(), function(place) {
-
-    // the search request object
-    var request = {
-      query: place.address
-    };
 
     //Create the marker
     place.marker = createMapMarker(place.lat, place.lon, place.name);
 
-    // infoWindows are the little helper windows that open when you click
-    // or hover over a pin on a map. They usually contain more information
-    // about a location.
-    var infoWindow = new google.maps.InfoWindow({
-      content: getInfo(place.name, place.id)
-    });
-
     //This allows the marker to bounch 3 times when a place is selected
     var bounceFunction = function() {
       bounceThrice(place.marker);
-    }
+    };
 
     //This creates an instance of a function that represents all actions
     //when a user selects a place
     var openFunction =  function() {
-      openWindow(place.id, place.wiki, map, place.marker, infoWindow, bounceFunction)
+      openWindow(place.wiki, map, place.marker, place.name, bounceFunction)
     };
 
     //Store that function in the observable array so the list view can use it
@@ -60,36 +51,35 @@ function initializeMap() {
     });
   }
 
-  // getInfo(location,id) creates the appropriate map marker HTML
-  function getInfo(location, id) {
-    contentString = "<div id=\"map-marker\">" +
-                    "<b>" + location + "</b>" +
-                    "<div id=\"" + id + "\"></div>" +
-                    "</div>";
-    return contentString;
-  }
-
-  /* openWindow(id, wiki, map, marker, infoWindow, bounce) sets the actions for
+  /* openWindow(wiki, map, marker, name, bounce) sets the actions for
      when a user selects a place.  This includes getting the information from
      the wiki, opening the infowindow and placing that information there,
-     and then having the marker bounce on the map.
-  */
-  function openWindow(id, wiki, map, marker, infoWindow, bounce) {
+     and then having the marker bounce on the map. */
+  function openWindow(wiki, map, marker, name, bounce) {
     $.getJSON( "https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=&titles="+wiki+"&callback=?",
           function(data) {
-            $.each(data["query"]["pages"], function(k,v){
-                 var wholePage = data["query"]["pages"][k]["extract"];
+            $.each(data.query.pages, function(k,v){
+                 var wholePage = data.query.pages[k].extract;
                  //Only display the first paragraph of the wiki page
-                 $("#"+id).html(wholePage.substring(0, wholePage.indexOf("</p>")));
-                 infoWindow.open(map,marker);
-                 return;
-            })
-          }
-      );
+                 var contentString = "<div id=\"map-marker\">" +
+                    "<b>" + name + "</b>" +
+                     wholePage.substring(0, wholePage.indexOf("</p>")) +
+                    "</div>";
 
-     $("#id").html("There was an issue with connecting to the Internet - so no wiki information is present");
-     bounce();
-     infoWindow.open(map,marker);
+                 oneInfoWindow.setContent(contentString);
+                 oneInfoWindow.open(map, marker);
+                 return;
+            });
+          }
+      )
+      .error(function() { //Inform the user that their may be a connectivity issue
+         var contentString = "Error - it seems like there is a connectivity problem and you are offline";
+         oneInfoWindow.setContent(contentString);
+         oneInfoWindow.open(map, marker);
+         return;
+      });
+
+      bounce();
   }
 
   // This function causes the marker to bounce three times
@@ -97,7 +87,6 @@ function initializeMap() {
     marker.setAnimation(google.maps.Animation.BOUNCE);
     setTimeout(function(){ marker.setAnimation(null); }, 2100);
   }
-
 
   // createMapMarker(lat, lon, name) creates map pins and returns the marker
   function createMapMarker(lat, lon, name) {

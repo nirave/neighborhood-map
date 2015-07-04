@@ -47,8 +47,8 @@ function viewModel() {
 
    self.select = function(place) {
       place.openfunction();
-    }
-};
+    };
+}
 
 //Create and load the viewmodel only after the document has been loaded
 $( document ).ready(function() {

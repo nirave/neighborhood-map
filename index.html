@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Neighborhood Map</title>
     <script src="js/jQuery.js"></script>
-    <script type='text/javascript' src='js/knockout.js'></script>
-    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?libraries=places"></script>
+    <script src='js/knockout.js'></script>
+    <script src="http://maps.googleapis.com/maps/api/js?libraries=places"></script>
     <script src="js/viewmodel.js"></script>
     <script src="js/map-init.js"></script>
     <link rel="stylesheet" href="css/bootstrap.css">
@@ -15,18 +15,20 @@
   </head>
   <body>
       <div class="container">
-        <div class="col-md-9">
-            <div id="map"></div>
-        </div>
-        <div class="col-md-3">
-            <div id="search-box">
-                <form action="#">
-                    <input placeholder="Search …" type="search" name="q" data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off">
-                </form>
-                <ul data-bind="foreach: searchplaces">
-                    <li data-bind="click: $parent.select">
-                    <span data-bind="text: name"></span>
-                </ul>
+        <div class="row">
+            <div class="col-md-9">
+                <div id="map"></div>
+            </div>
+            <div class="col-md-3">
+                <div id="search-box">
+                    <form action="#">
+                        <input placeholder="Search …" type="search" name="q" data-bind="value: query, valueUpdate: 'keyup'" autocomplete="off">
+                    </form>
+                    <ul data-bind="foreach: searchplaces">
+                        <li data-bind="click: $parent.select">
+                        <span data-bind="text: name"></span>
+                    </ul>
+                </div>
             </div>
         </div>
       </div>
