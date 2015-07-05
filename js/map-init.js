@@ -40,7 +40,7 @@ function initializeMap() {
     //This creates an instance of a function that represents all actions
     //when a user selects a place
     var openFunction =  function() {
-      openWindow(place.wiki, map, place.marker, place.name, bounceFunction)
+      openWindow(place.wiki, map, place.marker, place.name, bounceFunction);
     };
 
     //Store that function in the observable array so the list view can use it

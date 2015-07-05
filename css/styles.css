@@ -1,9 +1,8 @@
-html, 
+html,
 body,
 #map {
-    font-family: "Lato", sans-serif;
+    font: normal normal 200 14px "Lato", sans-serif;
     color: black;
-    font-weight: 200;
     height: 100%;
     width: 100%;
     margin: 0;
@@ -17,8 +16,7 @@ ul {
 }
 
 li {
-    padding-top: 3px;
-    padding-bottom: 3px;
+    padding: 3px 0;
     list-style-type: none;
     background-color: #d3d3d3;
     width: 100%;
